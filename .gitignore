@@ -1,5 +1,6 @@
 
 node_modules/
 .env
+.env.ecample
 .DS_Store
 npm-debug.log*
