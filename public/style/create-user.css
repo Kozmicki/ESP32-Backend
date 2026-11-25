@@ -1,0 +1,28 @@
+.back-link {
+    color: #38bdf8;
+    text-decoration: none;
+}
+
+.back-link:hover,
+.back-link:focus {
+    color: #7dd3fc;
+    text-decoration: underline;
+}
+
+.form-control {
+    border-color: #475569;
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+.form-control:focus {
+    border-color: #38bdf8;
+    background-color: #0f172a;
+    color: #f8fafc;
+    box-shadow: 0 0 0 0.25rem rgb(56 189 248 / 20%);
+}
+
+.form-control::placeholder,
+.form-text {
+    color: #94a3b8;
+}

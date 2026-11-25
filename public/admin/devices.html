@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 uređaji | ESP32 Backend</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/devices.css">
+</head>
+<body>
+    <main class="container py-5">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border border-secondary rounded-3 shadow-sm mb-4 px-3" aria-label="Glavna administratorska navigacija">
+            <a class="navbar-brand fw-semibold me-lg-4" href="/admin/dashboard">ESP32 <span class="text-info">ADMIN</span></a>
+            <div class="d-flex flex-column flex-lg-row flex-grow-1 align-items-lg-center gap-3">
+                <ul class="navbar-nav flex-row flex-wrap gap-1">
+                    <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/dashboard">Nadzorna ploča</a></li>
+                    <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/users">Korisnici</a></li>
+                    <li class="nav-item"><a class="nav-link active rounded-pill px-3" href="/admin/devices" aria-current="page">ESP32 uređaji</a></li>
+                    <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/status">Status servera</a></li>
+                    <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/tools">Alati</a></li>
+                </ul>
+                <div class="d-flex align-items-center flex-wrap gap-3 ms-lg-auto">
+                    <span id="admin-identity" class="text-secondary small"></span>
+                    <button class="btn btn-sm btn-outline-light" type="button" data-logout>Odjava</button>
+                </div>
+            </div>
+        </nav>
+
+        <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <h1 class="h2 mt-3 mb-1">ESP32 uređaji</h1>
+                <p class="text-secondary mb-0">Dodijeli po jedan ESP32 korisniku. MAC je tehnički podatak, a serijski broj je Bearer token.</p>
+            </div>
+        </header>
+
+        <div id="devices-message" class="alert d-none" role="alert" aria-live="polite"></div>
+
+        <section class="card dashboard-card mb-4">
+            <div class="card-body p-4">
+                <h2 class="h5 mb-3">Dodijeli novi ESP32</h2>
+                <form id="create-device-form" class="device-create-form">
+                    <div class="device-create-field">
+                        <label class="form-label" for="device-user">Korisnik</label>
+                        <select class="form-select" id="device-user" name="userId" required>
+                            <option value="">Učitavanje korisnika...</option>
+                        </select>
+                    </div>
+                    <div class="device-create-field">
+                        <label class="form-label" for="device-mac">MAC adresa ESP32</label>
+                        <input class="form-control" id="device-mac" name="macAddress" type="text" autocomplete="off" placeholder="AA:BB:CC:DD:EE:FF" pattern="([0-9A-Fa-f]{2}[:-]?){5}[0-9A-Fa-f]{2}" title="Unesite MAC adresu od 12 heksadekadskih znakova" required>
+                        <div class="form-text">Tehnički podatak.</div>
+                    </div>
+                    <div class="device-create-field">
+                        <label class="form-label" for="device-serial">Serijski token</label>
+                        <input class="form-control" id="device-serial" name="serialNumber" type="password" minlength="64" maxlength="64" pattern="[A-Fa-f0-9]{64}" autocomplete="new-password" spellcheck="false" placeholder="64 heksadekadska znaka" title="Unesite jedinstveni nasumični serijski token od 64 heksadekadska znaka" required>
+                        <div class="form-text">Generiraj jednom po ESP32: 32 slučajna bajta (64 hex znaka). Ne generiraj pri svakom resetu.</div>
+                    </div>
+                    <div class="device-create-field">
+                        <label class="form-label" for="device-name">Naziv uređaja</label>
+                        <input class="form-control" id="device-name" name="name" type="text" maxlength="100" placeholder="npr. ESP32 dnevni boravak">
+                    </div>
+                    <div class="device-create-action">
+                        <button id="create-device-button" class="btn btn-primary w-100" type="submit">Dodijeli</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section id="device-registration-panel" class="alert alert-info d-none mb-4" role="status" aria-live="polite">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                <div>
+                    <h2 class="h5">ESP32 uređaj je registriran</h2>
+                    <p class="mb-2">Server je spremio hash serijskog tokena. Sirovi token se ne prikazuje; provjeri da firmware koristi isti serijski broj.</p>
+                    <p class="mb-0">MAC adresa: <code id="registered-device-mac"></code></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card dashboard-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Dodijeljeni uređaji</h2>
+                <div class="d-flex align-items-center gap-2">
+                    <span id="device-count" class="badge text-bg-info">0</span>
+                    <button id="refresh-devices" class="btn btn-sm btn-outline-info" type="button">Osvježi</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Korisnik</th>
+                            <th scope="col">MAC / uređaj</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Zadnje očitanje</th>
+                            <th scope="col" class="text-end">Radnje</th>
+                        </tr>
+                    </thead>
+                    <tbody id="devices-table-body">
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary py-4">Učitavanje uređaja...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="update-device-token-dialog" class="device-token-dialog" aria-labelledby="update-device-token-title">
+        <form id="update-device-token-form">
+            <h2 id="update-device-token-title" class="h5">Ažuriraj serijski token</h2>
+            <p class="text-secondary">
+                Unesi 64-znamenkasti serijski broj koji je ugrađen u ESP32 firmware.
+                Spremanjem stari token odmah prestaje vrijediti.
+            </p>
+            <p id="update-token-device-mac" class="small text-secondary"></p>
+            <div id="update-token-message" class="alert d-none" role="alert" aria-live="polite"></div>
+            <input id="update-token-device-id" type="hidden">
+            <div class="mb-3">
+                <label class="form-label" for="update-token-serial">Novi serijski token</label>
+                <input class="form-control" id="update-token-serial" type="password" minlength="64" maxlength="64" pattern="[A-Fa-f0-9]{64}" autocomplete="new-password" spellcheck="false" required>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <button id="cancel-token-update" class="btn btn-outline-light" type="button">Odustani</button>
+                <button id="save-token-update" class="btn btn-primary" type="submit">Ažuriraj</button>
+            </div>
+        </form>
+    </dialog>
+
+    <footer class="site-footer text-center py-4 px-3">
+        <small>© 2026 ESP32 Backend. Sva prava pridržana. Developed by Nenad Kežić.</small>
+    </footer>
+
+    <script src="/scripts/session.js" defer></script>
+    <script src="/scripts/admin-devices.js" defer></script>
+</body>
+</html>

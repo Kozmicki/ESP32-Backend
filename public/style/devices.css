@@ -1,0 +1,114 @@
+.dashboard-card {
+    border-color: #334155;
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+.dashboard-card .card-header {
+    border-bottom-color: #334155;
+    background: #172235;
+}
+
+.back-link {
+    color: #38bdf8;
+    text-decoration: none;
+}
+
+.back-link:hover,
+.back-link:focus {
+    color: #7dd3fc;
+    text-decoration: underline;
+}
+
+.form-control,
+.form-select {
+    border-color: #475569;
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #38bdf8;
+    background-color: #0f172a;
+    color: #f8fafc;
+    box-shadow: 0 0 0 0.25rem rgb(56 189 248 / 20%);
+}
+
+.device-token-dialog {
+    width: min(32rem, calc(100vw - 2rem));
+    border: 1px solid #475569;
+    border-radius: 0.85rem;
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 1.5rem;
+}
+
+.device-token-dialog::backdrop {
+    background: rgb(2 6 23 / 75%);
+    backdrop-filter: blur(3px);
+}
+
+.device-create-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+}
+
+.device-create-field {
+    min-width: 0;
+}
+
+.device-create-action {
+    width: 100%;
+}
+
+.device-token-dialog .form-control {
+    border-color: #475569;
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+.table {
+    --bs-table-bg: #1e293b;
+    --bs-table-color: #f8fafc;
+    --bs-table-hover-bg: #26364b;
+    --bs-table-hover-color: #ffffff;
+    min-width: 760px;
+}
+
+.table th,
+.table td {
+    border-color: #334155;
+}
+
+.device-mac {
+    display: block;
+    max-width: 180px;
+    color: #94a3b8;
+    overflow-wrap: anywhere;
+}
+
+@media (min-width: 576px) {
+    .device-create-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .device-create-action {
+        grid-column: 1 / -1;
+        justify-self: end;
+        width: min(100%, 12rem);
+    }
+}
+
+@media (min-width: 1200px) {
+    .device-create-form {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    header > div:last-child {
+        justify-content: space-between;
+    }
+}

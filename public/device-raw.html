@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sirovi ESP32 JSON podaci</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <main class="container py-5">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border border-secondary rounded-3 shadow-sm mb-4 px-3" aria-label="Glavna administratorska navigacija">
+            <a class="navbar-brand fw-semibold me-lg-4" href="/admin/dashboard">ESP32 <span class="text-info">ADMIN</span></a>
+            <div class="d-flex flex-column flex-lg-row flex-grow-1 align-items-lg-center gap-3">
+                <ul class="navbar-nav flex-row flex-wrap gap-1">
+                    <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/dashboard">Nadzorna ploča</a></li>
+                    <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/users">Korisnici</a></li>
+                    <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/devices">ESP32 uređaji</a></li>
+                    <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/status">Status servera</a></li>
+                    <li class="nav-item"><a class="nav-link active rounded-pill px-3" href="/admin/tools" aria-current="page">Alati</a></li>
+                </ul>
+                <div class="d-flex align-items-center flex-wrap gap-3 ms-lg-auto">
+                    <span id="admin-identity" class="text-secondary small"></span>
+                    <button class="btn btn-sm btn-outline-light" type="button" data-logout>Odjava</button>
+                </div>
+            </div>
+        </nav>
+
+        <section class="card shadow-lg mx-auto" style="max-width: 900px;">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-2">Sirovi JSON podaci ESP32 uređaja</h1>
+                <p class="text-secondary">
+                    Unesi serijski broj uređaja. Token se šalje u Bearer zaglavlju, ne sprema se i ne dodaje u URL.
+                </p>
+
+                <form id="device-raw-form" class="mb-3">
+                    <label class="form-label" for="device-serial-token">Serijski broj / Bearer token</label>
+                    <div class="input-group">
+                        <input
+                            class="form-control"
+                            id="device-serial-token"
+                            type="password"
+                            minlength="64"
+                            maxlength="64"
+                            pattern="[A-Fa-f0-9]{64}"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        >
+                        <button class="btn btn-primary" id="load-device-raw-data" type="submit">
+                            Dohvati JSON
+                        </button>
+                    </div>
+                </form>
+
+                <p id="device-raw-status" class="small text-secondary" role="status" aria-live="polite"></p>
+                <pre id="device-raw-output" class="p-3 rounded bg-dark text-light overflow-auto" aria-label="Sirovi JSON odgovor"></pre>
+                <a class="btn btn-outline-secondary mt-3" href="/admin/tools">Povratak na alate</a>
+            </div>
+        </section>
+    </main>
+    <footer class="site-footer text-center py-4 px-3">
+        <small>© 2026 ESP32 Backend. Sva prava pridržana. Developed by Nenad Kežić.</small>
+    </footer>
+    <script src="/scripts/session.js" defer></script>
+    <script src="/scripts/admin-identity.js" defer></script>
+    <script src="/scripts/device-raw.js" defer></script>
+</body>
+</html>

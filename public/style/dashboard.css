@@ -1,0 +1,87 @@
+.welcome-card {
+    border-color: #155e75;
+    background:
+        radial-gradient(circle at top right, rgb(14 165 233 / 18%), transparent 45%),
+        #1e293b;
+}
+
+.dashboard-card {
+    border-color: #334155;
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+.welcome-message {
+    color: #cbd5e1;
+    font-size: 1.1rem;
+}
+
+.account-details {
+    display: grid;
+    grid-template-columns: minmax(130px, 1fr) 2fr;
+    gap: 0.8rem 1rem;
+}
+
+.account-details dt {
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.account-details dd {
+    margin-bottom: 0;
+    overflow-wrap: anywhere;
+}
+
+.sensor-card {
+    padding: 1rem;
+    border: 1px solid #334155;
+    border-radius: 0.5rem;
+    background: #172235;
+}
+
+.sensor-label {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.sensor-value {
+    color: #f8fafc;
+    font-size: clamp(2rem, 7vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.sensor-unit {
+    margin-left: 0.3rem;
+    color: #38bdf8;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.settings-section {
+    padding: 1rem;
+    border: 1px solid #334155;
+    border-radius: 0.5rem;
+    background: #172235;
+}
+
+.dashboard-card .form-control,
+.dashboard-card .form-select {
+    border-color: #475569;
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+.dashboard-card .form-control:focus,
+.dashboard-card .form-select:focus {
+    border-color: #38bdf8;
+    background-color: #0f172a;
+    color: #f8fafc;
+    box-shadow: 0 0 0 0.25rem rgb(56 189 248 / 20%);
+}
+
+.dashboard-card .form-text {
+    color: #94a3b8;
+}

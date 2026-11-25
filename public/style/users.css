@@ -1,0 +1,112 @@
+.table {
+    --bs-table-bg: #1e293b;
+    --bs-table-color: #f8fafc;
+    --bs-table-hover-bg: #26364b;
+    --bs-table-hover-color: #ffffff;
+    min-width: 700px;
+}
+
+.account-bar {
+    min-height: 42px;
+}
+
+.account-bar > div {
+    text-align: right;
+}
+
+.card-header {
+    border-bottom-color: #334155;
+    background: #172235;
+    color: #f8fafc;
+}
+
+.table thead th {
+    color: #cbd5e1;
+    white-space: nowrap;
+}
+
+.table td,
+.table th {
+    border-color: #334155;
+}
+
+.user-email {
+    color: #94a3b8;
+    overflow-wrap: anywhere;
+}
+
+.user-modal {
+    border: 1px solid #475569;
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+.user-modal .modal-header,
+.user-modal .modal-footer {
+    border-color: #334155;
+}
+
+/* Stilizira raspored podataka u administratorskom detaljnom prikazu. */
+.user-details-eyebrow {
+    color: #38bdf8;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.details-section {
+    border: 1px solid #334155;
+    border-radius: 0.75rem;
+    background: #172235;
+    padding: 1rem;
+}
+
+.user-details-grid {
+    display: grid;
+    grid-template-columns: minmax(9rem, 0.8fr) minmax(0, 1.2fr);
+    gap: 0.7rem 1rem;
+}
+
+.user-details-grid dt {
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.user-details-grid dd {
+    margin: 0;
+    color: #f8fafc;
+    overflow-wrap: anywhere;
+}
+
+.form-select {
+    border-color: #475569;
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+.form-select:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 0.25rem rgb(56 189 248 / 20%);
+}
+
+@media (max-width: 575.98px) {
+    .user-details-grid {
+        grid-template-columns: 1fr;
+        gap: 0.2rem;
+    }
+
+    .user-details-grid dd {
+        margin-bottom: 0.65rem;
+    }
+
+    .account-bar {
+        align-items: flex-start !important;
+        flex-direction: column;
+    }
+
+    .account-bar > div {
+        width: 100%;
+        justify-content: space-between;
+        text-align: left;
+    }
+}
