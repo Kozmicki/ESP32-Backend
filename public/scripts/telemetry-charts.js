@@ -44,10 +44,10 @@ window.telemetryCharts = (() => {
                 minute: "2-digit"
             })}`;
         };
-        const createOptions = (max) => {
+        const createOptions = (max, showLegend = false) => {
             const valueAxis = {
                 beginAtZero: true,
-                ticks: { color: "#94a3b8" },
+                ticks: { color: "#f7f1f5" },
                 grid: { color: "rgba(148, 163, 184, 0.12)" }
             };
             if (max !== undefined) valueAxis.max = max;
@@ -59,7 +59,10 @@ window.telemetryCharts = (() => {
                 parsing: false,
                 normalized: true,
                 plugins: {
-                    legend: { display: false },
+                    legend: {
+                        display: showLegend,
+                        labels: { color: "#f7f1f5" }
+                    },
                     decimation: {
                         enabled: true,
                         algorithm: "lttb",
@@ -70,7 +73,7 @@ window.telemetryCharts = (() => {
                     x: {
                         type: "linear",
                         ticks: {
-                            color: "#94a3b8",
+                            color: "#f7f1f5",
                             maxTicksLimit: 8,
                             callback: formatHour
                         },
@@ -80,21 +83,32 @@ window.telemetryCharts = (() => {
                 }
             };
         };
-        const charts = series.map((sensor, index) => new Chart(canvases[index], {
-            type: "line",
-            data: {
-                datasets: [{
-                    label: sensor.label,
-                    data: sensor.points,
-                    borderColor: sensor.color,
-                    backgroundColor: `${sensor.color}1f`,
-                    borderWidth: 1.5,
-                    pointRadius: 0,
-                    tension: 0
-                }]
-            },
-            options: createOptions(sensor.max)
-        }));
+        const createDataset = (sensor) => ({
+            label: sensor.label,
+            data: sensor.points,
+            borderColor: sensor.color,
+            backgroundColor: `${sensor.color}1f`,
+            borderWidth: 1.5,
+            pointRadius: 0,
+            tension: 0
+        });
+        const charts = [
+            new Chart(canvases[0], {
+                type: "line",
+                data: { datasets: [createDataset(series[0])] },
+                options: createOptions(series[0].max)
+            }),
+            new Chart(canvases[1], {
+                type: "line",
+                data: { datasets: [createDataset(series[1])] },
+                options: createOptions(series[1].max)
+            }),
+            new Chart(canvases[2], {
+                type: "line",
+                data: { datasets: series.slice(2).map(createDataset) },
+                options: createOptions(100, true)
+            })
+        ];
 
         const apply = (update) => {
             const newEndAt = new Date(update.endAt).getTime();

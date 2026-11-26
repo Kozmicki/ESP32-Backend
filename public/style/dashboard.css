@@ -1,19 +1,25 @@
 .welcome-card {
-    border-color: #155e75;
+    border-color: var(--glass-panel-border);
     background:
-        radial-gradient(circle at top right, rgb(14 165 233 / 18%), transparent 45%),
-        #1e293b;
+        radial-gradient(circle at top right, rgb(var(--app-accent-rgb) / 18%), transparent 45%),
+        var(--glass-panel);
 }
 
 .dashboard-card {
-    border-color: #334155;
-    background: #1e293b;
-    color: #f8fafc;
+    border-color: var(--glass-panel-border);
+    background: var(--glass-panel);
+    color: var(--app-accent);
 }
 
 .welcome-message {
-    color: #cbd5e1;
+    color: var(--app-accent);
     font-size: 1.1rem;
+}
+
+.welcome-role-badge,
+.user-role-badge {
+    background-color: var(--app-button-bg);
+    color: var(--app-button-color);
 }
 
 .account-details {
@@ -23,7 +29,7 @@
 }
 
 .account-details dt {
-    color: #94a3b8;
+    color: var(--app-accent);
     font-weight: 500;
 }
 
@@ -34,20 +40,21 @@
 
 .sensor-card {
     padding: 1rem;
-    border: 1px solid #334155;
+    border: 1px solid var(--glass-panel-border);
     border-radius: 0.5rem;
-    background: #172235;
+    background: var(--glass-panel-deep);
+    backdrop-filter: blur(10px);
 }
 
 .sensor-label {
-    color: #94a3b8;
+    color: var(--app-accent);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.1em;
 }
 
 .sensor-value {
-    color: #f8fafc;
+    color: var(--app-accent);
     font-size: clamp(2rem, 7vw, 3rem);
     font-weight: 700;
     line-height: 1.1;
@@ -55,33 +62,34 @@
 
 .sensor-unit {
     margin-left: 0.3rem;
-    color: #38bdf8;
+    color: var(--app-accent);
     font-size: 1.2rem;
     font-weight: 500;
 }
 
 .settings-section {
     padding: 1rem;
-    border: 1px solid #334155;
+    border: 1px solid var(--glass-panel-border);
     border-radius: 0.5rem;
-    background: #172235;
+    background: var(--glass-panel-deep);
+    backdrop-filter: blur(10px);
 }
 
 .dashboard-card .form-control,
 .dashboard-card .form-select {
     border-color: #475569;
     background-color: #0f172a;
-    color: #f8fafc;
+    color: var(--app-accent);
 }
 
 .dashboard-card .form-control:focus,
 .dashboard-card .form-select:focus {
-    border-color: #38bdf8;
+    border-color: var(--app-accent);
     background-color: #0f172a;
-    color: #f8fafc;
-    box-shadow: 0 0 0 0.25rem rgb(56 189 248 / 20%);
+    color: var(--app-accent);
+    box-shadow: 0 0 0 0.25rem rgb(var(--app-accent-rgb) / 20%);
 }
 
 .dashboard-card .form-text {
-    color: #94a3b8;
+    color: var(--app-accent);
 }

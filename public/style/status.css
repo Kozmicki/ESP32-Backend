@@ -1,11 +1,11 @@
 .status-card {
-    border-color: #334155;
-    background: #1e293b;
-    color: #f8fafc;
+    border-color: var(--glass-panel-border);
+    background: var(--glass-panel);
+    color: var(--app-accent);
 }
 
 .status-label {
-    color: #38bdf8;
+    color: var(--app-accent);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -18,7 +18,7 @@
 }
 
 .status-details dt {
-    color: #94a3b8;
+    color: var(--app-accent);
     font-weight: 500;
 }
 
@@ -28,12 +28,12 @@
 }
 
 .back-link {
-    color: #38bdf8;
+    color: var(--app-accent);
     text-decoration: none;
 }
 
 .back-link:hover,
 .back-link:focus {
-    color: #7dd3fc;
+    color: #f0cadb;
     text-decoration: underline;
 }

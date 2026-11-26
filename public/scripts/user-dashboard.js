@@ -6,6 +6,9 @@ const settingsMessage = document.getElementById("settings-message");
 const settingsForm = document.getElementById("device-settings-form");
 const settingsFields = document.getElementById("device-settings-fields");
 const saveSettingsButton = document.getElementById("save-device-settings");
+const userDashboardNavigation = document.getElementById("user-dashboard-navigation");
+const passwordChangeForm = document.getElementById("password-change-form");
+const passwordChangeMessage = document.getElementById("password-change-message");
 const deviceSettingsCard = document.getElementById("device-settings-card");
 const settingsUnavailableMessage = document.getElementById("settings-unavailable-message");
 const adminOwnDeviceSection = document.getElementById("admin-own-device");
@@ -17,6 +20,15 @@ const historyUnavailableMessage = document.getElementById("history-unavailable-m
 const telemetryHistoryMessage = document.getElementById("telemetry-history-message");
 const historyPage = document.getElementById("history-page");
 const historyTab = document.getElementById("history-tab");
+
+if (userDashboardNavigation) {
+    userDashboardNavigation.addEventListener("shown.bs.tab", () => {
+        if (window.matchMedia("(max-width: 991.98px)").matches) {
+            bootstrap.Collapse.getOrCreateInstance(userDashboardNavigation).hide();
+        }
+    });
+}
+
 let hasAssignedDevice = false;
 let isDeviceActive = false;
 let userTelemetryChart = null;
@@ -110,9 +122,7 @@ const loadMyTelemetryHistory = async () => {
             [
                 document.getElementById("user-temperature-chart"),
                 document.getElementById("user-humidity-chart"),
-                ...Array.from({ length: 4 }, (_, index) =>
-                    document.getElementById(`user-soil-moisture-${index + 1}-chart`)
-                )
+                document.getElementById("user-soil-moisture-chart")
             ]
         );
         telemetryHistoryMessage.textContent = result.data.samples.length
@@ -225,6 +235,7 @@ const setDeviceActive = (isActive) => {
         const userName = document.getElementById("user-name");
         if (userName) {
             userName.textContent = user.name;
+            document.getElementById("user-navbar-identity").textContent = user.name;
             document.getElementById("user-identity").textContent =
                 `${user.email} · ${window.sessionUi.roleName(user.role)}`;
             document.getElementById("user-email").textContent = user.email;
@@ -400,3 +411,59 @@ settingsForm.addEventListener("submit", async (event) => {
         saveSettingsButton.textContent = "Spremi postavke";
     }
 });
+
+if (passwordChangeForm) {
+    passwordChangeForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const currentPassword = document.getElementById("current-password").value;
+        const newPassword = document.getElementById("new-password").value;
+        const confirmPassword = document.getElementById("confirm-password").value;
+        const submitButton = document.getElementById("change-password-submit");
+
+        if (newPassword !== confirmPassword) {
+            passwordChangeMessage.textContent =
+                "Nova lozinka i potvrda nisu jednake.";
+            passwordChangeMessage.className = "alert alert-danger";
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Spremanje...";
+        passwordChangeMessage.className = "alert d-none";
+
+        try {
+            const response = await fetch("/api/auth/change-password", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    currentPassword,
+                    newPassword,
+                    confirmPassword
+                })
+            });
+
+            if (response.status === 401) {
+                window.location.replace("/login");
+                return;
+            }
+
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || "Lozinku nije moguće promijeniti.");
+            }
+
+            passwordChangeForm.reset();
+            passwordChangeMessage.textContent = result.message;
+            passwordChangeMessage.className = "alert alert-success";
+        } catch (error) {
+            passwordChangeMessage.textContent =
+                error.message || "Lozinku nije moguće promijeniti.";
+            passwordChangeMessage.className = "alert alert-danger";
+            console.error("Greška pri promjeni lozinke:", error);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Promijeni lozinku";
+        }
+    });
+}

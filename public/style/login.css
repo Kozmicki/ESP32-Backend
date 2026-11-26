@@ -16,15 +16,15 @@
     height: 52px;
     place-items: center;
     border-radius: 14px;
-    background: #0ea5e9;
-    color: #082f49;
+    background: #702b50;
+    color: var(--app-accent);
     font-size: 1.5rem;
     font-weight: 800;
 }
 
 .eyebrow,
 .card-label {
-    color: #38bdf8;
+    color: var(--app-accent);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -33,16 +33,16 @@
 .form-control {
     border-color: #475569;
     background-color: #0f172a;
-    color: #f8fafc;
+    color: var(--app-accent);
 }
 
 .form-control:focus {
-    border-color: #38bdf8;
+    border-color: var(--app-accent);
     background-color: #0f172a;
-    color: #f8fafc;
-    box-shadow: 0 0 0 0.25rem rgb(56 189 248 / 20%);
+    color: var(--app-accent);
+    box-shadow: 0 0 0 0.25rem rgb(var(--app-accent-rgb) / 20%);
 }
 
 .login-card a {
-    color: #38bdf8;
+    color: var(--app-accent);
 }

@@ -224,7 +224,7 @@ const openDetailsDialog = (user) => {
             const settings = device.controlSettings || {};
             const light = settings.light || {};
             const relay = settings.relay || {};
-            const relayMode = relay.mode === "heating" ? "Grijanje" : "Hlađenje";
+            const relayMode = relay.mode === "heating" ? "Niža temperatura ispuha od upuha" : "Niža temperatura upuha od ispuha";
             const onThreshold = formatMeasurement(relay.turnOnTemperatureC, "°C");
             const offThreshold = formatMeasurement(relay.turnOffTemperatureC, "°C");
             const relayThresholds = relay.mode === "heating"
@@ -281,9 +281,7 @@ const loadUserHistory = async (user) => {
             [
                 document.getElementById("user-temperature-chart"),
                 document.getElementById("user-humidity-chart"),
-                ...Array.from({ length: 4 }, (_, index) =>
-                    document.getElementById(`admin-soil-moisture-${index + 1}-chart`)
-                )
+                document.getElementById("admin-soil-moisture-chart")
             ]
         );
         historyMessage.textContent = result.data.samples.length

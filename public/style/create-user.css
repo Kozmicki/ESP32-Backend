@@ -1,28 +1,28 @@
 .back-link {
-    color: #38bdf8;
+    color: var(--app-accent);
     text-decoration: none;
 }
 
 .back-link:hover,
 .back-link:focus {
-    color: #7dd3fc;
+    color: #f0cadb;
     text-decoration: underline;
 }
 
 .form-control {
     border-color: #475569;
     background-color: #0f172a;
-    color: #f8fafc;
+    color: var(--app-accent);
 }
 
 .form-control:focus {
-    border-color: #38bdf8;
+    border-color: var(--app-accent);
     background-color: #0f172a;
-    color: #f8fafc;
-    box-shadow: 0 0 0 0.25rem rgb(56 189 248 / 20%);
+    color: var(--app-accent);
+    box-shadow: 0 0 0 0.25rem rgb(var(--app-accent-rgb) / 20%);
 }
 
 .form-control::placeholder,
 .form-text {
-    color: #94a3b8;
+    color: var(--app-accent);
 }

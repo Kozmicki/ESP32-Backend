@@ -5,6 +5,7 @@ const router = express.Router();
 // Učitava funkcije prijave i provjere trenutačnog korisnika.
 const {
     login,
+    changePassword,
     getCurrentUser,
     logout
 } = require("../controllers/authController");
@@ -16,6 +17,7 @@ router.post("/login", login);
 // Ostatak auth API-ja dostupan je samo prijavljenom korisniku.
 router.use(requireAuth);
 router.get("/me", getCurrentUser);
+router.put("/change-password", changePassword);
 router.post("/logout", logout);
 
 module.exports = router;

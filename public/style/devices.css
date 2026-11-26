@@ -1,22 +1,22 @@
 .dashboard-card {
-    border-color: #334155;
-    background: #1e293b;
-    color: #f8fafc;
+    border-color: var(--glass-panel-border);
+    background: var(--glass-panel);
+    color: var(--app-accent);
 }
 
 .dashboard-card .card-header {
-    border-bottom-color: #334155;
-    background: #172235;
+    border-bottom-color: var(--glass-panel-border);
+    background: var(--glass-panel-deep);
 }
 
 .back-link {
-    color: #38bdf8;
+    color: var(--app-accent);
     text-decoration: none;
 }
 
 .back-link:hover,
 .back-link:focus {
-    color: #7dd3fc;
+    color: #f0cadb;
     text-decoration: underline;
 }
 
@@ -24,24 +24,25 @@
 .form-select {
     border-color: #475569;
     background-color: #0f172a;
-    color: #f8fafc;
+    color: var(--app-accent);
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: #38bdf8;
+    border-color: var(--app-accent);
     background-color: #0f172a;
-    color: #f8fafc;
-    box-shadow: 0 0 0 0.25rem rgb(56 189 248 / 20%);
+    color: var(--app-accent);
+    box-shadow: 0 0 0 0.25rem rgb(var(--app-accent-rgb) / 20%);
 }
 
 .device-token-dialog {
     width: min(32rem, calc(100vw - 2rem));
-    border: 1px solid #475569;
+    border: 1px solid var(--glass-panel-border);
     border-radius: 0.85rem;
-    background: #1e293b;
-    color: #f8fafc;
+    background: var(--glass-panel);
+    color: var(--app-accent);
     padding: 1.5rem;
+    backdrop-filter: blur(14px);
 }
 
 .device-token-dialog::backdrop {
@@ -66,14 +67,14 @@
 .device-token-dialog .form-control {
     border-color: #475569;
     background-color: #0f172a;
-    color: #f8fafc;
+    color: var(--app-accent);
 }
 
 .table {
-    --bs-table-bg: #1e293b;
-    --bs-table-color: #f8fafc;
-    --bs-table-hover-bg: #26364b;
-    --bs-table-hover-color: #ffffff;
+    --bs-table-bg: var(--glass-panel-deep);
+    --bs-table-color: var(--app-accent);
+    --bs-table-hover-bg: rgb(255 255 255 / 8%);
+    --bs-table-hover-color: var(--app-accent);
     min-width: 760px;
 }
 
@@ -85,7 +86,7 @@
 .device-mac {
     display: block;
     max-width: 180px;
-    color: #94a3b8;
+    color: var(--app-accent);
     overflow-wrap: anywhere;
 }
 

@@ -11,9 +11,12 @@
 </head>
 <body>
     <main class="container py-5">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border border-secondary rounded-3 shadow-sm mb-4 px-3" aria-label="Glavna administratorska navigacija">
-            <a class="navbar-brand fw-semibold me-lg-4" href="/admin/dashboard">ESP32 <span class="text-info">ADMIN</span></a>
-            <div class="d-flex flex-column flex-lg-row flex-grow-1 align-items-lg-center gap-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border border-secondary rounded-3 shadow-sm mb-4 px-3 responsive-navbar" aria-label="Glavna administratorska navigacija">
+            <a class="navbar-brand fw-semibold me-lg-4" href="/admin/dashboard">SmartGrowBox <span class="text-info">ADMIN</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#admin-dashboard-navigation" aria-controls="admin-dashboard-navigation" aria-expanded="false" aria-label="Otvori ili zatvori navigaciju">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="admin-dashboard-navigation">
                 <ul class="navbar-nav flex-row flex-wrap gap-1">
                     <li class="nav-item"><a class="nav-link active rounded-pill px-3" href="/admin/dashboard" aria-current="page">Nadzorna ploča</a></li>
                     <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/users">Korisnici</a></li>
@@ -21,7 +24,7 @@
                     <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/status">Status servera</a></li>
                     <li class="nav-item"><a class="nav-link rounded-pill px-3" href="/admin/tools">Alati</a></li>
                 </ul>
-                <div class="d-flex align-items-center flex-wrap gap-3 ms-lg-auto">
+                <div class="d-flex align-items-center flex-wrap gap-3 ms-lg-auto responsive-navbar-logout">
                     <span id="admin-identity" class="text-secondary small"></span>
                     <button class="btn btn-sm btn-outline-light" type="button" data-logout>Odjava</button>
                 </div>
@@ -39,7 +42,7 @@
 
         <section class="card welcome-card shadow-lg mb-4">
             <div class="card-body p-4 p-md-5">
-                <span class="badge text-bg-info mb-3">ADMIN</span>
+                <span class="badge welcome-role-badge mb-3">ADMIN</span>
                 <h2 class="h3">Pozdrav, <span id="admin-name">...</span>!</h2>
                 <p id="random-message" class="welcome-message mb-0"></p>
             </div>
@@ -62,7 +65,7 @@
                         <p class="text-secondary">Dodijeli i upravljaj uređajima korisnika.</p>
                         <div class="d-flex flex-wrap gap-2">
                             <a class="btn btn-primary" href="/admin/devices">Otvori uređaje</a>
-                            <a id="admin-own-device-link" class="btn btn-outline-info d-none" href="#admin-own-device">Moj uređaj</a>
+                            <a id="admin-own-device-link" class="btn btn-outline-info d-none" href="#admin-own-device">Moj SmartGrowBox</a>
                         </div>
                     </div>
                 </article>
@@ -83,7 +86,7 @@
 
         <section id="admin-own-device" class="card dashboard-card mt-4 d-none">
             <div class="card-body p-4">
-                <h2 class="h5 mb-3">Moj ESP32 uređaj</h2>
+                <h2 class="h5 mb-3">Moj SmartGrowBox</h2>
                 <p id="device-status" class="text-secondary mb-2">Provjeravam dodijeljeni uređaj...</p>
                 <p id="device-mac-address" class="small text-secondary mb-2"></p>
                 <div id="device-readings-section">
@@ -150,21 +153,9 @@
                 <div class="history-chart-container">
                     <canvas id="user-humidity-chart" role="img" aria-label="Graf osobne vlage u posljednjih 30 dana"></canvas>
                 </div>
-                <h3 class="small text-secondary mt-4 mb-2">Vlaga tla — sonda 1 (%)</h3>
-                <div class="history-chart-container mb-4">
-                    <canvas id="user-soil-moisture-1-chart" role="img" aria-label="Graf vlage tla sonde 1 u posljednjih 30 dana"></canvas>
-                </div>
-                <h3 class="small text-secondary mb-2">Vlaga tla — sonda 2 (%)</h3>
-                <div class="history-chart-container mb-4">
-                    <canvas id="user-soil-moisture-2-chart" role="img" aria-label="Graf vlage tla sonde 2 u posljednjih 30 dana"></canvas>
-                </div>
-                <h3 class="small text-secondary mb-2">Vlaga tla — sonda 3 (%)</h3>
-                <div class="history-chart-container mb-4">
-                    <canvas id="user-soil-moisture-3-chart" role="img" aria-label="Graf vlage tla sonde 3 u posljednjih 30 dana"></canvas>
-                </div>
-                <h3 class="small text-secondary mb-2">Vlaga tla — sonda 4 (%)</h3>
-                <div class="history-chart-container">
-                    <canvas id="user-soil-moisture-4-chart" role="img" aria-label="Graf vlage tla sonde 4 u posljednjih 30 dana"></canvas>
+                <h3 class="small text-secondary mt-4 mb-2">Vlažnost tla — sonde 1–4 (%)</h3>
+                <div class="history-chart-container history-chart-container-soil">
+                    <canvas id="user-soil-moisture-chart" role="img" aria-label="Graf vlage tla za sonde 1 do 4 u posljednjih 30 dana"></canvas>
                 </div>
             </div>
         </section>
@@ -174,7 +165,7 @@
                 <div class="mb-4">
                     <h2 class="h5 mb-2">Upravljanje svjetlom i relejem</h2>
                     <p class="text-secondary mb-0">
-                        Postavke se spremaju na server. ESP32 ih preuzima svakih 60 sekundi.
+                        Postavke se spremaju na server. Uređaj ih preuzima svakih 30 sekundi.
                     </p>
                 </div>
 
@@ -185,7 +176,7 @@
                             <h3 class="h6 mb-3">Raspored svjetla</h3>
                             <div class="form-check form-switch mb-3">
                                 <input class="form-check-input" id="light-enabled" type="checkbox">
-                                <label class="form-check-label" for="light-enabled">Uključi timer rasvjete</label>
+                                <label class="form-check-label" for="light-enabled">Uključi upravljanje rasvjetom</label>
                             </div>
                             <div class="row g-3">
                                 <div class="col-12 col-sm-6">
@@ -207,8 +198,8 @@
                             <div class="mb-3">
                                 <label class="form-label" for="relay-mode">Način rada</label>
                                 <select class="form-select" id="relay-mode" required>
-                                    <option value="cooling">Viši ispuh</option>
-                                    <option value="heating">Niži ispuh</option>
+                                    <option value="cooling">Niža temperatura upuha od ispuha</option>
+                                    <option value="heating">Niža temperatura ispuha od upuha</option>
                                 </select>
                                 <p id="relay-mode-help" class="form-text mt-2 mb-0"></p>
                             </div>
@@ -225,7 +216,7 @@
                         </div>
 
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
-                            <p class="form-text mb-0">ESP32 konfiguracije provjerava svakih 60 sekundi.</p>
+                            <p class="form-text mb-0">Uređaj konfiguracije provjerava svakih 30 sekundi.</p>
                             <button id="save-device-settings" class="btn btn-primary" type="submit">Spremi postavke</button>
                         </div>
                     </fieldset>
@@ -235,9 +226,10 @@
     </main>
 
     <footer class="site-footer text-center py-4 px-3">
-        <small>© 2026 ESP32 Backend. Sva prava pridržana. Developed by Nenad Kežić.</small>
+        <small>© 2026 SmartGrowBox. Sva prava pridržana. Developed by Nenad Kežić.</small>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js" defer></script>
     <script src="/scripts/telemetry-charts.js" defer></script>
     <script src="/scripts/session.js" defer></script>

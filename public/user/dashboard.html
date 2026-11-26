@@ -11,12 +11,15 @@
 </head>
 <body>
     <main class="container py-5">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border border-secondary rounded-3 shadow-sm mb-4 px-3" aria-label="Glavna korisnička navigacija">
-            <a class="navbar-brand fw-semibold me-lg-4" href="/dashboard">ESP32 <span class="text-info">KORISNIK</span></a>
-            <div class="d-flex flex-row flex-wrap flex-grow-1 align-items-center gap-3">
-                <ul class="navbar-nav nav-pills flex-row flex-wrap gap-1" role="tablist" aria-label="Odjeljci korisničkog računa">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border border-secondary rounded-3 shadow-sm mb-4 px-3 responsive-navbar" aria-label="Glavna korisnička navigacija">
+            <a class="navbar-brand fw-semibold me-lg-4" href="/dashboard">SmartGrowBox <span class="text-info">KORISNIK</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#user-dashboard-navigation" aria-controls="user-dashboard-navigation" aria-expanded="false" aria-label="Otvori ili zatvori navigaciju">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="user-dashboard-navigation">
+                <ul class="navbar-nav flex-row flex-wrap gap-1" role="tablist" aria-label="Odjeljci korisničkog računa">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active rounded-pill px-3" id="my-device-tab" data-bs-toggle="tab" data-bs-target="#my-device-page" type="button" role="tab" aria-controls="my-device-page" aria-selected="true">Moj uređaj</button>
+                        <button class="nav-link active rounded-pill px-3" id="my-device-tab" data-bs-toggle="tab" data-bs-target="#my-device-page" type="button" role="tab" aria-controls="my-device-page" aria-selected="true">Moj SmartGrowBox</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link rounded-pill px-3" id="my-data-tab" data-bs-toggle="tab" data-bs-target="#my-data-page" type="button" role="tab" aria-controls="my-data-page" aria-selected="false">Moji podaci</button>
@@ -28,7 +31,8 @@
                         <button class="nav-link rounded-pill px-3" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings-page" type="button" role="tab" aria-controls="settings-page" aria-selected="false">Postavke</button>
                     </li>
                 </ul>
-                <div class="d-flex align-items-center gap-3 ms-auto">
+                <div class="d-flex align-items-center flex-wrap gap-3 ms-auto responsive-navbar-logout">
+                    <span id="user-navbar-identity" class="text-secondary small"></span>
                     <button class="btn btn-sm btn-outline-light" type="button" data-logout>Odjava</button>
                 </div>
             </div>
@@ -59,20 +63,45 @@
                         </dl>
                     </div>
                 </section>
+
+                <section class="card dashboard-card mt-4">
+                    <div class="card-body p-4">
+                        <h2 class="h5 mb-2">Promjena lozinke</h2>
+                        <p class="text-secondary mb-3">Unesite trenutačnu lozinku, zatim novu lozinku i njezinu potvrdu.</p>
+                        <div id="password-change-message" class="alert d-none" role="alert" aria-live="polite"></div>
+                        <form id="password-change-form">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label" for="current-password">Trenutačna lozinka</label>
+                                    <input class="form-control" id="current-password" name="currentPassword" type="password" autocomplete="current-password" required>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label" for="new-password">Nova lozinka</label>
+                                    <input class="form-control" id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="8" required>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label" for="confirm-password">Potvrdi novu lozinku</label>
+                                    <input class="form-control" id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required>
+                                </div>
+                            </div>
+                            <button id="change-password-submit" class="btn btn-primary mt-3" type="submit">Promijeni lozinku</button>
+                        </form>
+                    </div>
+                </section>
             </section>
 
             <section class="tab-pane fade show active" id="my-device-page" role="tabpanel" aria-labelledby="my-device-tab" tabindex="0">
-                <h1 class="h2 mb-4">Moj uređaj</h1>
+                <h1 class="h2 mb-4">Moj SmartGrowBox</h1>
                 <section class="card welcome-card shadow-lg mb-4">
                     <div class="card-body p-4 p-md-5">
-                        <span id="role-badge" class="badge text-bg-success mb-3">KORISNIK</span>
+                        <span id="role-badge" class="badge user-role-badge mb-3">KORISNIK</span>
                         <h2 class="h3">Pozdrav, <span id="user-name">...</span>!</h2>
                         <p id="random-message" class="welcome-message mb-0"></p>
                     </div>
                 </section>
                 <section class="card dashboard-card">
                     <div class="card-body p-4">
-                        <h2 class="h5 mb-3">Stanje ESP32 uređaja</h2>
+                        <h2 class="h5 mb-3">Stanje uređaja</h2>
                         <p id="device-status" class="text-secondary mb-2">Provjeravam dodijeljeni uređaj...</p>
                         <p id="device-mac-address" class="small text-secondary mb-2"></p>
                         <div id="device-readings-section" class="d-none">
@@ -143,21 +172,9 @@
                         <div class="history-chart-container">
                             <canvas id="user-humidity-chart" role="img" aria-label="Graf osobne vlage u posljednjih 30 dana"></canvas>
                         </div>
-                        <h3 class="small text-secondary mt-4 mb-2">Vlaga tla — sonda 1 (%)</h3>
-                        <div class="history-chart-container mb-4">
-                            <canvas id="user-soil-moisture-1-chart" role="img" aria-label="Graf vlage tla sonde 1 u posljednjih 30 dana"></canvas>
-                        </div>
-                        <h3 class="small text-secondary mb-2">Vlaga tla — sonda 2 (%)</h3>
-                        <div class="history-chart-container mb-4">
-                            <canvas id="user-soil-moisture-2-chart" role="img" aria-label="Graf vlage tla sonde 2 u posljednjih 30 dana"></canvas>
-                        </div>
-                        <h3 class="small text-secondary mb-2">Vlaga tla — sonda 3 (%)</h3>
-                        <div class="history-chart-container mb-4">
-                            <canvas id="user-soil-moisture-3-chart" role="img" aria-label="Graf vlage tla sonde 3 u posljednjih 30 dana"></canvas>
-                        </div>
-                        <h3 class="small text-secondary mb-2">Vlaga tla — sonda 4 (%)</h3>
-                        <div class="history-chart-container">
-                            <canvas id="user-soil-moisture-4-chart" role="img" aria-label="Graf vlage tla sonde 4 u posljednjih 30 dana"></canvas>
+                        <h3 class="small text-secondary mt-4 mb-2">Vlažnost tla — sonde 1–4 (%)</h3>
+                        <div class="history-chart-container history-chart-container-soil">
+                            <canvas id="user-soil-moisture-chart" role="img" aria-label="Graf vlage tla za sonde 1 do 4 u posljednjih 30 dana"></canvas>
                         </div>
                     </div>
                 </section>
@@ -171,7 +188,7 @@
                         <div class="mb-4">
                             <h2 class="h5 mb-2">Postavke svjetla i releja</h2>
                             <p class="text-secondary mb-0">
-                                Postavke se spremaju na server. ESP32 ih preuzima svakih 60 sekundi.
+                                Postavke se spremaju na server. Uređaj ih preuzima svakih 30 sekundi.
                             </p>
                         </div>
 
@@ -183,7 +200,7 @@
                                     <h3 class="h6 mb-3">Raspored svjetla</h3>
                                     <div class="form-check form-switch mb-3">
                                         <input class="form-check-input" id="light-enabled" type="checkbox">
-                                        <label class="form-check-label" for="light-enabled">Uključi timer rasvjete</label>
+                                        <label class="form-check-label" for="light-enabled">Uključi upravljanje rasvjetom</label>
                                     </div>
                                     <div class="row g-3">
                                         <div class="col-12 col-sm-6">
@@ -205,8 +222,8 @@
                                     <div class="mb-3">
                                         <label class="form-label" for="relay-mode">Način rada</label>
                                         <select class="form-select" id="relay-mode" required>
-                                            <option value="cooling">Viši ispuh</option>
-                                            <option value="heating">Niži ispuh</option>
+                                            <option value="cooling">Niža temperatura upuha od ispuha</option>
+                                            <option value="heating">Niža temperatura ispuha od upuha</option>
                                         </select>
                                         <p id="relay-mode-help" class="form-text mt-2 mb-0"></p>
                                     </div>
@@ -223,7 +240,7 @@
                                 </div>
 
                                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
-                                    <p class="form-text mb-0">ESP32 konfiguracije provjerava svakih 60 sekundi.</p>
+                                    <p class="form-text mb-0">Uređaj konfiguracije provjerava svakih 30 sekundi.</p>
                                     <button id="save-device-settings" class="btn btn-primary" type="submit">Spremi postavke</button>
                                 </div>
                             </fieldset>
@@ -235,7 +252,7 @@
     </main>
 
     <footer class="site-footer text-center py-4 px-3">
-        <small>© 2026 ESP32 Backend. Sva prava pridržana. Developed by Nenad Kežić.</small>
+        <small>© 2026 SmartGrowBox. Sva prava pridržana. Developed by Nenad Kežić.</small>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
