@@ -33,8 +33,8 @@ const showSettingsMessage = (message, type) => {
 const updateRelayDescription = () => {
     const mode = document.getElementById("relay-mode").value;
     const description = mode === "cooling"
-        ? "Hlađenje: relej se uključuje na ili iznad gornjeg praga, a isključuje na ili ispod donjeg praga."
-        : "Grijanje: relej se uključuje na ili ispod donjeg praga, a isključuje na ili iznad gornjeg praga.";
+        ? "Temperatura upuha mora biti niža od temperature ispuha"
+        : "Temperatura ispuha mora biti niža od temperature upuha";
 
     document.getElementById("relay-mode-help").textContent = description;
 };

@@ -260,7 +260,7 @@
                             <h3 class="h6 mb-3">Raspored svjetla</h3>
                             <div class="form-check form-switch mb-3">
                                 <input class="form-check-input" id="admin-light-enabled" type="checkbox">
-                                <label class="form-check-label" for="admin-light-enabled">Uključi automatski raspored svjetla</label>
+                                <label class="form-check-label" for="admin-light-enabled">Uključi timer rasvjete</label>
                             </div>
                             <div class="row g-3">
                                 <div class="col-12 col-sm-6">
@@ -282,18 +282,18 @@
                             <div class="mb-3">
                                 <label class="form-label" for="admin-relay-mode">Način rada</label>
                                 <select class="form-select" id="admin-relay-mode" required>
-                                    <option value="cooling">Hlađenje</option>
-                                    <option value="heating">Grijanje</option>
+                                    <option value="cooling">Viši ispuh</option>
+                                    <option value="heating">Niži ispuh</option>
                                 </select>
                                 <p id="admin-relay-mode-help" class="form-text mt-2 mb-0"></p>
                             </div>
                             <div class="row g-3">
                                 <div class="col-12 col-sm-6">
-                                    <label class="form-label" for="admin-relay-on-temperature">Temperatura uključivanja (°C)</label>
+                                    <label class="form-label" for="admin-relay-on-temperature">Temperatura uključivanja ispuha zraka (°C)</label>
                                     <input class="form-control" id="admin-relay-on-temperature" type="number" min="-40" max="100" step="0.1" required>
                                 </div>
                                 <div class="col-12 col-sm-6">
-                                    <label class="form-label" for="admin-relay-off-temperature">Temperatura isključivanja (°C)</label>
+                                    <label class="form-label" for="admin-relay-off-temperature">Temperatura uključivanja upuha zraka (°C)</label>
                                     <input class="form-control" id="admin-relay-off-temperature" type="number" min="-40" max="100" step="0.1" required>
                                 </div>
                             </div>
