@@ -6,6 +6,7 @@ const Device = require("../models/Device");
 
 // bcryptjs šifrira lozinke prije spremanja u bazu.
 const bcrypt = require("bcryptjs");
+const { sendUserWelcomeEmail } = require("../utils/email");
 
 // CREATE USER
 // Kreira novog korisnika i obrađuje prijavljene greške.
@@ -71,10 +72,25 @@ const createUser = async (req, res, next) => {
             password: hashedPassword
         });
 
+        let emailSent = false;
+        try {
+            await sendUserWelcomeEmail({
+                name: normalizedName,
+                email: normalizedEmail,
+                password
+            });
+            emailSent = true;
+        } catch (emailError) {
+            console.error("Korisnički račun je kreiran, ali aktivacijski email nije poslan:", emailError.message);
+        }
+
         // Vraća samo javne podatke, nikada hash lozinke.
         res.status(201).json({
             success: true,
-            message: "Korisnik uspješno kreiran",
+            message: emailSent
+                ? "Korisnik uspješno kreiran i aktivacijski email je poslan"
+                : "Korisnik uspješno kreiran, ali aktivacijski email nije poslan",
+            emailSent,
             data: {
                 id: user._id,
                 name: user.name,

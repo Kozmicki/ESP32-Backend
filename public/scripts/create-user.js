@@ -46,7 +46,12 @@ form.addEventListener("submit", async (event) => {
         }
 
         form.reset();
-        showMessage(`${result.message}. Sada se možete prijaviti.`, "success");
+        showMessage(
+            result.emailSent
+                ? "Račun je kreiran i aktivacijski email je poslan korisniku."
+                : "Račun je kreiran, ali aktivacijski email nije moguće poslati.",
+            result.emailSent ? "success" : "warning"
+        );
     } catch (error) {
         // Prikazuje jasnu poruku kad server nije dostupan ili odgovor nije moguće pročitati.
         showMessage("Nije moguće povezati se sa serverom. Pokušajte ponovno.", "danger");

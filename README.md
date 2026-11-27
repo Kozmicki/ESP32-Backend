@@ -24,3 +24,21 @@ Administrator ima potpunu kontrolu nad sustavom i može:
 - provjeriti stanje servera i MongoDB baze
 
 Obični korisnički račun prikazuje samo njegov dodijeljeni uređaj i omogućuje praćenje očitanja te promjenu dopuštenih postavki. Deaktivirani korisnici i uređaji više ne mogu pristupiti sustavu niti slati podatke.
+
+## SMTP e-mail aktivacije
+
+Kada administrator kreira korisnički račun, server šalje korisniku poruku s emailom i lozinkom putem SMTP poslužitelja.
+
+Dodajte ove vrijednosti u `.env`:
+
+```env
+APP_URL=https://vaša-domena.hr
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=korisnik@example.com
+SMTP_PASS=lozinka-ili-app-lozinka
+SMTP_FROM=SmartGrowBox <noreply@example.com>
+```
+
+Za port 465 obično se koristi `SMTP_SECURE=true`, dok se za port 587 obično koristi `SMTP_SECURE=false`. Ako SMTP nije konfiguriran ili slanje ne uspije, račun se ipak kreira, a administratorsko sučelje prikazuje upozorenje.
