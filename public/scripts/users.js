@@ -577,7 +577,11 @@ editForm.addEventListener("submit", async (event) => {
 
         editModal.hide();
         await loadUsers();
-        showMessage(pageMessage, result.message || "Podaci korisnika su ažurirani.", "success");
+        showMessage(
+            pageMessage,
+            result.message || "Podaci korisnika su ažurirani.",
+            result.emailAccepted === false ? "warning" : "success"
+        );
     } catch (error) {
         showMessage(editMessage, "Nije moguće povezati se sa serverom.", "danger");
         console.error("Greška pri ažuriranju korisnika:", error);

@@ -6,11 +6,33 @@ const User = require("../models/User");
 const TelemetryReading = require("../models/TelemetryReading");
 const normalizeMacAddress = require("../utils/macAddress");
 const normalizeDeviceSerial = require("../utils/deviceSerial");
+const { sendDeviceNotification } = require("../utils/email");
 
 const CONTROL_TIMEZONE = "Europe/Zagreb";
 const CONFIG_POLL_INTERVAL_SECONDS = 60;
 const TELEMETRY_INTERVAL_MS = 60 * 60 * 1000;
 const TELEMETRY_RETENTION_SAMPLES = 30 * 24;
+
+const notifyDeviceOwner = async (user, device, event) => {
+    if (!user?.email) {
+        console.error("Email obavijest za uređaj nije poslana: vlasnik nema email adresu");
+        return false;
+    }
+
+    try {
+        await sendDeviceNotification({
+            name: user.name,
+            email: user.email,
+            deviceName: device.name,
+            macAddress: device.macAddress || device.deviceId,
+            event
+        });
+        return true;
+    } catch (error) {
+        console.error("Email obavijest za uređaj nije poslana:", error.message);
+        return false;
+    }
+};
 
 // Dohvaća zajednički satni uzorak za administratore i vlasnika uređaja.
 const buildTelemetryHistory = async (device, after) => {
@@ -567,11 +589,15 @@ const createDevice = async (req, res, next) => {
             name: name?.trim() || "ESP32",
             tokenHash
         });
+        const emailAccepted = await notifyDeviceOwner(user, device, "assigned");
 
         // Serijski token se ne vraća u odgovoru jer je već ugrađen u ESP32.
         return res.status(201).json({
             success: true,
-            message: "ESP32 uređaj uspješno je dodijeljen korisniku",
+            message: emailAccepted
+                ? "ESP32 uređaj dodijeljen je korisniku, a SMTP poslužitelj prihvatio je email obavijest"
+                : "ESP32 uređaj dodijeljen je korisniku, ali email obavijest nije poslana",
+            emailAccepted,
             data: toPublicDevice({ ...device.toObject(), user })
         });
     } catch (error) {
@@ -611,6 +637,15 @@ const updateDeviceToken = async (req, res, next) => {
             });
         }
 
+        const deviceBeforeUpdate = await Device.findById(req.params.id).select("isActive");
+        if (!deviceBeforeUpdate) {
+            return res.status(404).json({
+                success: false,
+                message: "ESP32 uređaj nije pronađen"
+            });
+        }
+
+        const becameActive = !deviceBeforeUpdate.isActive;
         const device = await Device.findByIdAndUpdate(
             req.params.id,
             {
@@ -627,9 +662,18 @@ const updateDeviceToken = async (req, res, next) => {
             });
         }
 
+        const emailAccepted = becameActive
+            ? await notifyDeviceOwner(device.user, device, "activated")
+            : undefined;
+
         return res.status(200).json({
             success: true,
-            message: "Serijski token je ažuriran; stari token više ne vrijedi",
+            message: becameActive
+                ? emailAccepted
+                    ? "Serijski token je ažuriran, uređaj aktiviran i SMTP poslužitelj prihvatio je email obavijest"
+                    : "Serijski token je ažuriran i uređaj aktiviran, ali email obavijest nije poslana"
+                : "Serijski token je ažuriran; stari token više ne vrijedi",
+            ...(emailAccepted !== undefined && { emailAccepted }),
             data: toPublicDevice(device)
         });
     } catch (error) {
@@ -656,11 +700,21 @@ const setDeviceStatus = async (req, res, next) => {
             });
         }
 
-        const device = await Device.findByIdAndUpdate(
-            req.params.id,
+        let device = await Device.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                isActive: { $ne: isActive }
+            },
             { isActive },
             { returnDocument: "after", runValidators: true }
         ).select("-tokenHash").populate("user", "name email isActive");
+        const statusChanged = Boolean(device);
+
+        if (!device) {
+            device = await Device.findById(req.params.id)
+                .select("-tokenHash")
+                .populate("user", "name email isActive");
+        }
 
         if (!device) {
             return res.status(404).json({
@@ -669,9 +723,22 @@ const setDeviceStatus = async (req, res, next) => {
             });
         }
 
+        const emailAccepted = statusChanged
+            ? await notifyDeviceOwner(
+                device.user,
+                device,
+                isActive ? "activated" : "deactivated"
+            )
+            : undefined;
+
         return res.status(200).json({
             success: true,
-            message: isActive ? "Uređaj je aktiviran" : "Uređaj je deaktiviran",
+            message: statusChanged
+                ? emailAccepted
+                    ? `${isActive ? "Uređaj je aktiviran" : "Uređaj je deaktiviran"}; SMTP poslužitelj prihvatio je email obavijest`
+                    : `${isActive ? "Uređaj je aktiviran" : "Uređaj je deaktiviran"}, ali email obavijest nije poslana`
+                : `Uređaj je već ${isActive ? "aktivan" : "deaktiviran"}`,
+            ...(emailAccepted !== undefined && { emailAccepted }),
             data: toPublicDevice(device)
         });
     } catch (error) {

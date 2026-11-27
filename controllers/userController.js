@@ -6,7 +6,10 @@ const Device = require("../models/Device");
 
 // bcryptjs šifrira lozinke prije spremanja u bazu.
 const bcrypt = require("bcryptjs");
-const { sendUserWelcomeEmail } = require("../utils/email");
+const {
+    sendUserWelcomeEmail,
+    sendUserStatusNotification
+} = require("../utils/email");
 
 // CREATE USER
 // Kreira novog korisnika i obrađuje prijavljene greške.
@@ -196,6 +199,7 @@ const getUserById = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const { name, email, password, role, isActive } = req.body || {};
+        let previousIsActive;
 
         // Prazan objekt sprema samo stvarno promijenjena polja.
         const updates = {};
@@ -243,6 +247,14 @@ const updateUser = async (req, res, next) => {
             }
 
             updates.isActive = isActive;
+            const existingUser = await User.findById(req.params.id).select("isActive");
+            if (!existingUser) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Korisnik nije pronađen"
+                });
+            }
+            previousIsActive = existingUser.isActive;
         }
 
         // Ako se šalje lozinka, provjerava se i ponovno šifrira.
@@ -283,10 +295,32 @@ const updateUser = async (req, res, next) => {
             });
         }
 
+        const statusChanged = previousIsActive !== undefined &&
+            previousIsActive !== user.isActive;
+        let emailAccepted;
+        if (statusChanged) {
+            try {
+                await sendUserStatusNotification({
+                    name: user.name,
+                    email: user.email,
+                    isActive: user.isActive
+                });
+                emailAccepted = true;
+            } catch (emailError) {
+                emailAccepted = false;
+                console.error("Korisnički račun je ažuriran, ali email obavijest nije poslana:", emailError.message);
+            }
+        }
+
         // Vraća ažurirani korisnički dokument.
         res.status(200).json({
             success: true,
-            message: "Korisnik uspješno ažuriran",
+            message: statusChanged
+                ? emailAccepted
+                    ? `Korisnički račun je ${user.isActive ? "aktiviran" : "deaktiviran"}; SMTP poslužitelj prihvatio je email obavijest`
+                    : `Korisnički račun je ${user.isActive ? "aktiviran" : "deaktiviran"}, ali email obavijest nije poslana`
+                : "Korisnik uspješno ažuriran",
+            ...(emailAccepted !== undefined && { emailAccepted }),
             data: {
                 id: user._id,
                 name: user.name,

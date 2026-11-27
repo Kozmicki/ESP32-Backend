@@ -25,9 +25,9 @@ Administrator ima potpunu kontrolu nad sustavom i može:
 
 Obični korisnički račun prikazuje samo njegov dodijeljeni uređaj i omogućuje praćenje očitanja te promjenu dopuštenih postavki. Deaktivirani korisnici i uređaji više ne mogu pristupiti sustavu niti slati podatke.
 
-## SMTP e-mail aktivacije
+## SMTP e-mail obavijesti
 
-Kada administrator kreira korisnički račun, server šalje korisniku poruku s emailom i lozinkom putem SMTP poslužitelja.
+Kada administrator kreira korisnički račun, server šalje korisniku poruku s emailom i lozinkom te šalje obavijest o kasnijoj aktivaciji ili deaktivaciji računa. Pri dodjeli ESP32 uređaja te njegovoj aktivaciji ili deaktivaciji server šalje vlasniku obavijest s nazivom uređaja i MAC adresom. Serijski token uređaja nikada se ne šalje emailom.
 
 Dodajte ove vrijednosti u `.env`:
 
@@ -41,4 +41,4 @@ SMTP_PASS=lozinka-ili-app-lozinka
 SMTP_FROM=SmartGrowBox <noreply@example.com>
 ```
 
-Za port 465 obično se koristi `SMTP_SECURE=true`, dok se za port 587 obično koristi `SMTP_SECURE=false`. Ako SMTP nije konfiguriran ili slanje ne uspije, račun se ipak kreira, a administratorsko sučelje prikazuje upozorenje.
+`SMTP_FROM` mora biti adresa pošiljatelja verificirana kod SMTP pružatelja. Za port 465 obično se koristi `SMTP_SECURE=true`, dok se za port 587 obično koristi `SMTP_SECURE=false`. Ako SMTP nije konfiguriran ili slanje ne uspije, račun ili promjena uređaja se ipak spremaju, a administratorsko sučelje prikazuje upozorenje. Potvrda SMTP poslužitelja znači da je prihvatio poruku za obradu, ne i da je stigla u korisnikov inbox.

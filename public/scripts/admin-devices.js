@@ -214,7 +214,7 @@ deviceForm.addEventListener("submit", async (event) => {
         });
 
         showDeviceRegistration(result.data);
-        showDevicesMessage(result.message, "success");
+        showDevicesMessage(result.message, result.emailAccepted === false ? "warning" : "success");
         deviceForm.reset();
         await loadDevices();
     } catch (error) {
@@ -307,7 +307,7 @@ deviceTableBody.addEventListener("click", async (event) => {
             body: options.body ? JSON.stringify(options.body) : undefined
         });
 
-        showDevicesMessage(result.message, "success");
+        showDevicesMessage(result.message, result.emailAccepted === false ? "warning" : "success");
         await loadDevices();
     } catch (error) {
         showDevicesMessage(error.message, "danger");
