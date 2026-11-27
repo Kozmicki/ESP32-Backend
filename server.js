@@ -1,4 +1,44 @@
 
+/*
+ * SmartGrowBox / ESP32 Backend
+ *
+ * Opis:
+ * Node.js i Express aplikacija koja povezuje ESP32 uređaje s korisničkim računima.
+ * Administrator upravlja korisnicima i uređajima, a korisnik pregledava podatke
+ * svojeg uređaja i dostupne postavke. MongoDB čuva korisnike, uređaje, sesije i
+ * povijesna telemetrijska očitanja.
+ *
+ * Glavne mogućnosti:
+ * - prijava i odvojena administratorska i korisnička sučelja
+ * - upravljanje korisničkim računima, statusima i dodijeljenim uređajima
+ * - autentifikacija ESP32 uređaja serijskim tokenom i pripadajućom MAC adresom
+ * - primanje i prikaz telemetrije te upravljanje postavkama uređaja
+ * - SMTP emailovi za korisničke račune i obavijesti o uređajima
+ *
+ * Sigurnosni principi:
+ * - osjetljive konfiguracijske vrijednosti čitaju se iz .env datoteke
+ * - lozinke korisnika i serijski tokeni uređaja pohranjuju se kao hash
+ * - administratorske i korisničke rute štite se autentifikacijom i ovlastima
+ * - sesije se pohranjuju u MongoDB; kolačić je HttpOnly i SameSite=Strict,
+ *   a u produkciji koristi HTTPS oznaku Secure
+ * - privatne stranice i API odgovori ne pohranjuju se u cache preglednika
+ * - serijski token uređaja ne vraća se kroz API niti se šalje emailom
+ *
+ * Pokretanje:
+ * 1. Instalirati Node.js i pokrenuti `npm install`.
+ * 2. U .env postaviti MONGODB_URI i SESSION_SECRET (najmanje 32 znaka).
+ *    Po potrebi postaviti PORT i SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER,
+ *    SMTP_PASS te verificirani SMTP_FROM.
+ * 3. Pokrenuti produkcijski server naredbom `npm start`.
+ *    Za lokalni razvoj s automatskim ponovnim pokretanjem koristiti `npm run dev`.
+ *
+ * Server prvo uspostavlja vezu s MongoDB-om, a zatim sluša na 0.0.0.0 i portu
+ * iz PORT varijable (zadano 3000). Iza HTTPS reverse proxyja u produkciji
+ * omogućuje se povjerenje u prvi proxy kako bi Secure sesijski kolačić radio.
+ *
+ * Developed by Nenad Kežić.
+ */
+
 // Učitava konfiguraciju iz .env prije čitanja varijabli.
 require("dotenv").config();
 
